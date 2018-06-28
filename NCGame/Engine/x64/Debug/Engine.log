@@ -1,0 +1,9 @@
+﻿  engine.cpp
+c:\users\jonathonlau\source\repos\ncgame\engine\engine.cpp(5): warning C4273: 'Engine::Initialize': inconsistent dll linkage
+  c:\users\jonathonlau\source\repos\ncgame\engine\engine.h(19): note: see previous definition of 'Initialize'
+c:\users\jonathonlau\source\repos\ncgame\engine\engine.cpp(12): warning C4273: 'Engine::Update': inconsistent dll linkage
+  c:\users\jonathonlau\source\repos\ncgame\engine\engine.h(20): note: see previous definition of 'Update'
+c:\users\jonathonlau\source\repos\ncgame\engine\engine.cpp(17): warning C4273: 'Engine::Shutdown': inconsistent dll linkage
+  c:\users\jonathonlau\source\repos\ncgame\engine\engine.h(21): note: see previous definition of 'Shutdown'
+     Creating library C:\Users\JonathonLau\source\repos\NCGame\x64\Debug\Engine.lib and object C:\Users\JonathonLau\source\repos\NCGame\x64\Debug\Engine.exp
+  Engine.vcxproj -> C:\Users\JonathonLau\source\repos\NCGame\x64\Debug\Engine.dll
