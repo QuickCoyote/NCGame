@@ -1,26 +1,64 @@
-#pragma once
 #include "engine.h"
+#include "renderer.h"
 #include "textureManager.h"
-#include <cassert>
+#include "textManager.h"
+#include "inputManager.h"
+#include "audioSystem.h"
+#include "physics.h"
+#include "physicsComponent.h"
+#include "timer.h"
+#include "vector2D.h"
+#include "matrix22.h"
+#include <assert.h>
+#include <vector>
+#include <iostream>
 
 bool Engine::Initialize()
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
-	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 800, SDL_WINDOW_SHOWN);
-	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+	TTF_Init();
+	m_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
 
-	m_textureManager = new TextureManager();
-	m_textureManager->Initialize(this);
+	Timer::Instance()->Initialize(this);
+	Renderer::Instance()->Initialize(this);
+	TextureManager::Instance()->Initialize(this);
+	TextManager::Instance()->Initialize(this);
+	InputManager::Instance()->Initialize(this);
+	AudioSystem::Instance()->Initialize(this);	
+	Physics::Instance()->Initialize(this);
+	
 
 	return true;
 }
 
+void Engine::Shutdown()
+{
+	Physics::Instance()->Shutdown();
+	AudioSystem::Instance()->Shutdown();
+	InputManager::Instance()->Shutdown();
+	TextManager::Instance()->Shutdown();
+	TextureManager::Instance()->Shutdown();
+	Renderer::Instance()->Shutdown();
+	Timer::Instance()->Shutdown();
+
+	SDL_DestroyWindow(m_window);
+	TTF_Quit();
+	SDL_Quit();
+}
+
 void Engine::Update()
 {
+	Timer::Instance()->Update();
+	Timer::Instance()->SetTimeScale(1.0f);
+	InputManager::Instance()->Update();
+	AudioSystem::Instance()->Update();
+	Physics::Instance()->Update();
+
 	SDL_Event event;
 	SDL_PollEvent(&event);
 
-	switch (event.type) {
+	switch (event.type)
+	{
 	case SDL_QUIT:
 		m_isQuit = true;
 		break;
@@ -29,32 +67,8 @@ void Engine::Update()
 		{
 			m_isQuit = true;
 		}
-		break;
 	}
 
-	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-	SDL_RenderClear(m_renderer);
-	
-	// Draw the sprites
+	SDL_PumpEvents();
 
-	SDL_Texture* texture = m_textureManager->GetTexture("..\\content\\KamikazeRobot.bmp");
-	int height = 800;
-	int width = 600;
-	SDL_Rect rect = { 0, 0, width, height };
-	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-	SDL_SetRenderDrawColor(m_renderer, 0, 255, 0, 255);
-	//SDL_RenderFillRect(m_renderer, &rect);
-
-	SDL_RenderCopyEx(m_renderer, texture, nullptr, &rect, 0.0, nullptr, SDL_FLIP_NONE);
-
-	SDL_RenderPresent(m_renderer);
-
-}
-
-void Engine::Shutdown()
-{
-	m_textureManager->Shutdown();
-	SDL_DestroyRenderer(m_renderer);
-	SDL_DestroyWindow(m_window);
-	SDL_Quit();
 }
